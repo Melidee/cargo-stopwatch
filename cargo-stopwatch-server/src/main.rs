@@ -1,27 +1,37 @@
 use anyhow::{Ok, Result};
-use std::{io::Read, net::TcpListener, process::exit, thread, time::{Duration, Instant}};
+use discord_rich_presence::{DiscordIpc, DiscordIpcClient, activity::Activity};
+use std::{
+    io::Read,
+    net::TcpListener,
+    process::exit,
+    thread,
+    time::{Duration, Instant},
+};
 
-use crate::args::{ServerConfig, Subcommand};
+use crate::{
+    args::ServerConfig,
+    server::start_server,
+};
 
 mod args;
 mod server;
 
 fn main() {
-    let ServerConfig {
-        command,
-        start_config,
-    } = args::stopwatch_server_config();
-    match command {
-        Subcommand::Alive => alive(),
-        _ => println!("{:?}", start_config)
+    let config = args::stopwatch_server_config();
+    match config {
+        ServerConfig::Alive => {
+            if alive() {
+                exit(0)
+            } else {
+                exit(1)
+            }
+        }
+        ServerConfig::Start(start_config) => {
+            start_server(start_config).expect("failed to start stopwatch server");
+        }
     }
 }
 
-fn alive() {
-    let is_alive = true;
-    if is_alive {
-        exit(0)
-    } else {
-        exit(1)
-    }
+fn alive() -> bool {
+    true
 }

@@ -1,33 +1,24 @@
-use std::str::FromStr;
+use std::{process::exit, str::FromStr};
 
 use clap::{Arg, ArgAction, ArgMatches, Command};
 
 #[derive(Debug, Clone)]
-pub(crate) struct ServerConfig {
-    pub(crate) command: Subcommand,
-    pub(crate) start_config: StartConfig,
+pub(crate) enum ServerConfig {
+    Start(StartConfig),
+    Alive,
 }
 
 pub(crate) fn stopwatch_server_config() -> ServerConfig {
     let matches = command().get_matches();
-    ServerConfig {
-        command: get_subcommand(&matches),
-        start_config: start_config(&matches),
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub(crate) enum Subcommand {
-    Start,
-    Alive,
-    None,
-}
-
-fn get_subcommand(matches: &ArgMatches) -> Subcommand {
     match matches.subcommand_name() {
-        Some("start") => Subcommand::Start,
-        Some("alive") => Subcommand::Alive,
-        _ => Subcommand::None,
+        Some("start") => ServerConfig::Start(start_config(&matches)),
+        Some("alive") => ServerConfig::Alive,
+        _ => {
+            command()
+                .print_help()
+                .expect("failed to print help command");
+            exit(1)
+        }
     }
 }
 
