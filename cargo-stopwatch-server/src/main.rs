@@ -13,7 +13,7 @@ fn main() {
     } = args::stopwatch_server_config();
     match command {
         Subcommand::Alive => alive(),
-        _ => unimplemented!()
+        _ => println!("{:?}", start_config)
     }
 }
 

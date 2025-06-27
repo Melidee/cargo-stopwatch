@@ -81,7 +81,7 @@ fn command() -> Command {
                 .help("Server timeout in minutes.")
                 .short('t').long("timeout")
                 .action(ArgAction::Set)
-                .value_name("TIMEOUT")
+                .value_name("MINUTES")
                 .default_value("10"))
             .arg(Arg::new("quiet")
                 .help("Don't display package name or command on discord")

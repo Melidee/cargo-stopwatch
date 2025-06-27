@@ -1,2 +1,3 @@
 [workspace]
 members = ["cargo-stopwatch", "cargo-stopwatch-server", "stopwatch-protocol"]
+resolver = "3"
