@@ -1,16 +1,15 @@
 use anyhow::{Ok, Result};
-use discord_rich_presence::{DiscordIpc, DiscordIpcClient, activity::Activity};
+use discord_rich_presence::{activity::{Activity, Button, Timestamps}, DiscordIpc, DiscordIpcClient};
 use std::{
     io::Read,
     net::TcpListener,
     process::exit,
     thread,
-    time::{Duration, Instant},
+    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use crate::{
-    args::ServerConfig,
-    server::start_server,
+    args::ServerConfig, server::start_server,
 };
 
 mod args;
