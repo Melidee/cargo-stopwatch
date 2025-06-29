@@ -1,6 +1,6 @@
 use clap::{parser::ValuesRef, value_parser, Arg, ArgAction, Command};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct StopwatchConfig {
     pub server: Option<Vec<String>>,
     pub port: u16,

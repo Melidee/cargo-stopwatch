@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum Message {
     /// Close the server connection
     Close,
@@ -20,7 +20,7 @@ pub enum Message {
     Error(String),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Run {
     pub crate_name: String,
     pub command: String,

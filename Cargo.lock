@@ -110,7 +110,9 @@ checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 name = "cargo-stopwatch"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "clap",
+ "fork",
  "serde_json",
  "stopwatch-protocol",
  "tokio",
@@ -177,6 +179,15 @@ dependencies = [
  "serde_json",
  "serde_repr",
  "uuid",
+]
+
+[[package]]
+name = "fork"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05dc8b302e04a1c27f4fe694439ef0f29779ca4edc205b7b58f00db04e29656d"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
