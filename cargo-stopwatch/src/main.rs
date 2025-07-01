@@ -52,6 +52,7 @@ fn main() {
         config.port,
     )
     .expect("Failed to send message");
+    println!("stopped");
 }
 
 fn send_message(message: &Message, port: u16) -> Result<(), anyhow::Error> {
@@ -64,6 +65,7 @@ fn send_message(message: &Message, port: u16) -> Result<(), anyhow::Error> {
 
 fn start_server(config: &StopwatchConfig) -> Result<(), anyhow::Error> {
     if server_is_alive(config.port) {
+        println!("alive!");
         return Ok(());
     }
     if let Ok(Fork::Child) = daemon(true, false) {

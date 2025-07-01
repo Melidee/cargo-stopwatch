@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 clap = "4.5.40"
-discord-rich-presence = "0.2.5"
+discord-rpc-client = "0.4.0"
 serde_json = "1.0.140"
 stopwatch-protocol = { path = "../stopwatch-protocol"}
+tokio = { version = "1.45.1", features = ["full"] }

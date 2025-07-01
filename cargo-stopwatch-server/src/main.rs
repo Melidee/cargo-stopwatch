@@ -1,11 +1,5 @@
-use anyhow::{Ok, Result};
-use discord_rich_presence::{activity::{Activity, Button, Timestamps}, DiscordIpc, DiscordIpcClient};
 use std::{
-    io::Read,
-    net::TcpListener,
     process::exit,
-    thread,
-    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 use crate::{
