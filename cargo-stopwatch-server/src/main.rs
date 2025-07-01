@@ -9,7 +9,8 @@ use crate::{
 mod args;
 mod server;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let config = args::stopwatch_server_config();
     match config {
         ServerConfig::Alive => {
@@ -20,7 +21,7 @@ fn main() {
             }
         }
         ServerConfig::Start(start_config) => {
-            start_server(start_config).expect("failed to start stopwatch server");
+            start_server(start_config).await.expect("failed to start stopwatch server");
         }
     }
 }

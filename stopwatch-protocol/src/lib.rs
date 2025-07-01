@@ -7,9 +7,9 @@ pub enum Message {
     /// Close the server connection
     Close,
     /// 
-    Started(StartInfo),
+    Started(CommandInfo, u64),
     /// Shows a command is running
-    Stopped(String, u64),
+    Stopped(CommandInfo, u64),
     /// Update the timeout of the server
     Timeout(u64),
     /// Check for a response from the server without doing anything
@@ -17,16 +17,16 @@ pub enum Message {
     /// Server acknowledge response
     Ok,
     /// Server error response
-    Error(String),
+    Error(StopwatchError),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct StartInfo {
+pub struct CommandInfo {
     pub crate_name: String,
     pub command: String,
-    pub time: u64,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum StopwatchError {
     UnexpectedMessage,
     ExistingConnection,

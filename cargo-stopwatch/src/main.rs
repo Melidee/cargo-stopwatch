@@ -7,7 +7,7 @@ use std::{
 };
 
 use fork::{Fork, daemon};
-use stopwatch_protocol::{Message, Run};
+use stopwatch_protocol::{CommandInfo, Message};
 
 use crate::args::{StopwatchConfig, get_stopwatch_config};
 
@@ -25,16 +25,23 @@ fn main() {
             .expect("Failed to execute server command");
     }
     start_server(&config.clone()).expect("Failed to start server");
+    let command = config
+        .commands
+        .get(0)
+        .expect("no cargo command provided")
+        .to_owned();
     let start = Instant::now();
-    send_message(
-        &Message::Started(Run {
-            crate_name: env!("CARGO_PKG_NAME").into(),
-            command: config.commands.get(0).expect("no cargo command provided").to_owned(),
-            time: SystemTime::now()
+    let cmd_start = send_message(
+        &Message::Started(
+            CommandInfo {
+                crate_name: env!("CARGO_PKG_NAME").into(),
+                command: command.clone(),
+            },
+            SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .unwrap()
-                .as_secs() as i64,
-        }),
+                .as_secs(),
+        ),
         config.port,
     )
     .expect("Failed to send message");
@@ -48,7 +55,13 @@ fn main() {
         .wait()
         .expect("Failed to execute cargo command");
     send_message(
-        &Message::Stopped(start.elapsed().as_secs() as i64),
+        &Message::Stopped(
+            CommandInfo {
+                crate_name: env!("CARGO_PKG_NAME").into(),
+                command: command.clone(),
+            },
+            start.elapsed().as_secs(),
+        ),
         config.port,
     )
     .expect("Failed to send message");
