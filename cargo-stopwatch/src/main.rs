@@ -1,8 +1,7 @@
 use std::{
     io::{Read, Write},
     net::TcpStream,
-    process::{Command, Stdio, exit},
-    thread::{self, Thread},
+    process::{Command, Stdio},
     time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
@@ -31,7 +30,7 @@ fn main() {
         .expect("no cargo command provided")
         .to_owned();
     let start = Instant::now();
-    let cmd_start = send_message(
+    send_message(
         &Message::Started(
             CommandInfo {
                 crate_name: env!("CARGO_PKG_NAME").into(),
@@ -78,17 +77,22 @@ fn send_message(message: &Message, port: u16) -> Result<(), anyhow::Error> {
 
 fn start_server(config: &StopwatchConfig) -> Result<(), anyhow::Error> {
     if server_is_alive(config.port) {
-        println!("alive!");
+        println!("already running");
         return Ok(());
     }
-    if let Ok(Fork::Child) = daemon(true, false) {
-        Command::new("cargo-stopwatch-server")
-            .arg("start")
-            .args(["--port", &config.port.to_string()])
-            .args(["--timeout", &config.timeout.to_string()])
-            .spawn()
-            .unwrap();
-    }
+    Command::new("../target/debug/cargo-stopwatchd")
+        .args([
+            "start",
+            "--timeout",
+            &config.timeout.to_string(),
+            "--port",
+            &config.port.to_string(),
+        ])
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()?;
+    println!("alive? : {}", server_is_alive(config.port));
     Ok(())
 }
 
