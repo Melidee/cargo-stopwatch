@@ -2,17 +2,16 @@ use clap::{parser::ValuesRef, value_parser, Arg, ArgAction, Command};
 
 #[derive(Debug, Clone)]
 pub(crate) struct StopwatchConfig {
-    pub server: Option<Vec<String>>,
+    pub server_commands: Option<Vec<String>>,
     pub port: u16,
     pub timeout: u64,
     pub quiet: bool,
     pub commands: Vec<String>,
 }
-
 pub(crate) fn get_stopwatch_config() -> StopwatchConfig {
     let matches = command().get_matches();
     StopwatchConfig {
-        server: matches.subcommand_matches("server").map(|submatches| {
+        server_commands: matches.subcommand_matches("server").map(|submatches| {
             submatches
                 .get_many::<String>("commands")
                 .unwrap_or(ValuesRef::default())
@@ -36,7 +35,7 @@ pub(crate) fn get_stopwatch_config() -> StopwatchConfig {
 
 fn command() -> Command {
     Command::new("cargo stopwatch-server")
-        .about("Time cargo ")
+        .about("Time cargo commands and display them as discord presence")
         .version("0.1.0")
         .author("Amelia Rossi")
         .arg_required_else_help(true)
@@ -70,7 +69,4 @@ fn command() -> Command {
             .trailing_var_arg(true)
             .allow_hyphen_values(true)
             .num_args(1..))
-        .subcommand(Command::new("alive")
-            .about("Check if the server is running")
-            .long_about("Check if the server is running, exits with 0 if the server is running or 1 if the server is not"))
 }

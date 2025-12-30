@@ -5,7 +5,8 @@ use std::{
     time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
-use fork::{Fork, daemon};
+use anyhow::Result;
+
 use stopwatch_protocol::{CommandInfo, Message};
 
 use crate::args::{StopwatchConfig, get_stopwatch_config};
@@ -14,14 +15,8 @@ mod args;
 
 fn main() {
     let config = get_stopwatch_config();
-    if let Some(ref server_args) = config.server {
-        Command::new("cargo-stopwatch-server")
-            .args(server_args)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .stderr(Stdio::inherit())
-            .spawn()
-            .expect("Failed to execute server command");
+    if let Some(ref server_args) = config.server_commands {
+        run_server_command(server_args).expect("Failed to run server command")
     }
     start_server(&config.clone()).expect("Failed to start server");
     let command = config
@@ -66,6 +61,16 @@ fn main() {
     .expect("Failed to send message");
     println!("stopped");
 }
+fn run_server_command(server_args: &Vec<String>) -> Result<()> {
+    Command::new("cargo-stopwatch-server")
+        .args(server_args)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .spawn()?
+        .wait()?;
+    Ok(())
+}
 
 fn send_message(message: &Message, port: u16) -> Result<(), anyhow::Error> {
     let msg = serde_json::to_vec(message)?;
@@ -92,7 +97,6 @@ fn start_server(config: &StopwatchConfig) -> Result<(), anyhow::Error> {
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()?;
-    println!("alive? : {}", server_is_alive(config.port));
     Ok(())
 }
 

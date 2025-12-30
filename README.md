@@ -1,5 +1,3 @@
-This isnt done yet so its not published :(
-
 # Stopwatch
 Share your rust projects on discord presence!
 
