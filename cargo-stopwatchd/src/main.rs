@@ -15,8 +15,10 @@ async fn main() {
     match config {
         ServerConfig::Alive => {
             if alive() {
+                println!("Stopwatch server running");
                 exit(0)
             } else {
+                println!("Stopwatch server not running");
                 exit(1)
             }
         }

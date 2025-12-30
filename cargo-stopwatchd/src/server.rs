@@ -9,7 +9,7 @@ use std::{
 use crate::args::StartConfig;
 use anyhow::anyhow;
 use atomic_time::AtomicInstant;
-use discord_rpc_client::Client;
+use discord_presence::{Client, models::ActivityTimestamps};
 use stopwatch_protocol::{CommandInfo, Message, StopwatchError};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -107,7 +107,7 @@ impl Discord {
             .set_activity(|act| {
                 act.details(format!("Working on {}", command.crate_name))
                     .state(format!("Running `{}` for", command.command))
-                    .timestamps(|timestamps| timestamps.start(start_time))
+                    .timestamps(|_| ActivityTimestamps::new().start(start_time))
             })
             .map(|_| ())
             .map_err(|e| anyhow!(e.to_string()))
