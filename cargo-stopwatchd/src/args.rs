@@ -23,10 +23,10 @@ pub(crate) fn stopwatch_server_config() -> ServerConfig {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct StartConfig {
-    pub(crate) port: u16,
-    pub(crate) timeout: u64,
-    pub(crate) quiet: bool,
+pub struct StartConfig {
+    port: u16,
+    timeout: u64,
+    quiet: bool,
 }
 
 fn start_config(root_matches: &ArgMatches) -> StartConfig {
