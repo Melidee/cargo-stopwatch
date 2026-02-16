@@ -24,9 +24,9 @@ pub(crate) fn stopwatch_server_config() -> ServerConfig {
 
 #[derive(Debug, Clone)]
 pub struct StartConfig {
-    port: u16,
-    timeout: u64,
-    quiet: bool,
+    pub port: u16,
+    pub timeout: u64,
+    pub quiet: bool,
 }
 
 fn start_config(root_matches: &ArgMatches) -> StartConfig {
@@ -54,7 +54,7 @@ fn parse_arg<F: FromStr>(matches: &ArgMatches, id: &str) -> Option<F> {
 }
 
 fn command() -> Command {
-    Command::new("cargo stopwatch-server")
+    Command::new("cargo stopwatchd")
         .about("Server daemon for the cargo stopwatch cli tool")
         .version("0.1.0")
         .author("Amelia Rossi")

@@ -16,14 +16,15 @@ mod args;
 fn main() {
     let config = get_stopwatch_config();
     if let Some(ref server_args) = config.server_commands {
-        run_server_command(server_args).expect("Failed to run server command")
+        run_server_command(server_args).expect("Failed to run server command");
+        return;
     }
     start_server(&config.clone()).expect("Failed to start server");
     let command = config
         .commands
         .get(0)
         .expect("no cargo command provided")
-        .to_owned();
+        .clone();
     let start = Instant::now();
     send_message(
         &Message::Started(
@@ -36,7 +37,7 @@ fn main() {
                 .unwrap()
                 .as_secs(),
         ),
-        config.port,
+        config.server_config.port,
     )
     .expect("Failed to send message");
     Command::new("cargo")
@@ -56,13 +57,13 @@ fn main() {
             },
             start.elapsed().as_secs(),
         ),
-        config.port,
+        config.server_config.port,
     )
     .expect("Failed to send message");
     println!("stopped");
 }
 fn run_server_command(server_args: &Vec<String>) -> Result<()> {
-    Command::new("cargo-stopwatch-server")
+    Command::new("../target/debug/cargo-stopwatchd")
         .args(server_args)
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
@@ -81,22 +82,10 @@ fn send_message(message: &Message, port: u16) -> Result<(), anyhow::Error> {
 }
 
 fn start_server(config: &StopwatchConfig) -> Result<(), anyhow::Error> {
-    if server_is_alive(config.port) {
+    if server_is_alive(config.server_config.port) {
         println!("already running");
         return Ok(());
     }
-    Command::new("../target/debug/cargo-stopwatchd")
-        .args([
-            "start",
-            "--timeout",
-            &config.timeout.to_string(),
-            "--port",
-            &config.port.to_string(),
-        ])
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()?;
     Ok(())
 }
 

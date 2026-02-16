@@ -133,6 +133,7 @@ name = "cargo-stopwatch"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "cargo-stopwatchd",
  "clap",
  "fork",
  "serde_json",

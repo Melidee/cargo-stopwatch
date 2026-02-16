@@ -17,6 +17,7 @@ use tokio::{
     sync::Mutex,
 };
 
+#[tokio::main]
 pub async fn start_server(config: StartConfig) -> anyhow::Result<()> {
     let addr = format!("127.0.0.1:{}", config.port);
     let listener = TcpListener::bind(addr).await?;

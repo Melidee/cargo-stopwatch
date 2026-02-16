@@ -2,15 +2,16 @@ use std::{
     process::exit,
 };
 
+mod args;
+mod server;
+
 use crate::{
     args::ServerConfig, server::start_server,
 };
 
-mod args;
-mod server;
 
-#[tokio::main]
-async fn main() {
+
+fn main() {
     let config = args::stopwatch_server_config();
     match config {
         ServerConfig::Alive => {
@@ -23,7 +24,7 @@ async fn main() {
             }
         }
         ServerConfig::Start(start_config) => {
-            start_server(start_config).await.expect("failed to start stopwatch server");
+            start_server(start_config).expect("failed to start stopwatch server");
         }
     }
 }
